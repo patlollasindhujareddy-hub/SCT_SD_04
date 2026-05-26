@@ -1,0 +1,46 @@
+import csv
+import json
+import urllib.request
+
+# 1. Target a free, legal online e-commerce API (Fake Store API)
+url = "https://fakestoreapi.com/products"
+
+print("Fetching product data from the e-commerce database...")
+
+try:
+    # 2. Open the URL and download the data using Python's built-in tools
+    with urllib.request.urlopen(url) as response:
+        # Read the raw data and decode it into a readable string
+        raw_data = response.read().decode('utf-8')
+        
+        # Parse the string into a clean Python list of products
+        products = json.loads(raw_data)
+    
+    # 3. Create and write to the CSV file
+    filename = "products.csv"
+    with open(filename, mode='w', newline='', encoding='utf-8') as file:
+        writer = csv.writer(file)
+        
+        # Write the top header row
+        writer.writerow(['Product Name', 'Price', 'Rating'])
+        
+        # Loop through each item in the product list
+        for item in products:
+            name = item['title']
+            price = f"${item['price']}"
+            rating = f"{item['rating']['rate']} / 5"
+            
+            # Write the structured row to the CSV file
+            writer.writerow([name, price, rating])
+            
+    print("\nSUCCESS!")
+    print(f"A file named '{filename}' has been created in the compiler's temporary memory.")
+    print("--------------------------------------------------")
+    print("HERE IS WHAT YOUR GENERATED CSV DATA LOOKS LIKE:\n")
+    
+    # 4. Print the final CSV content so you can see it right in the online console
+    with open(filename, mode='r', encoding='utf-8') as file:
+        print(file.read())
+
+except Exception as e:
+    print(f"An error occurred: {e}")
